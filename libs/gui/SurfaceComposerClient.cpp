@@ -608,6 +608,14 @@ void SurfaceComposerClient::unblankDisplay(const sp<IBinder>& token) {
     ComposerService::getComposerService()->unblank(token);
 }
 
+#if defined(TOROPLUS_RADIO)
+status_t SurfaceComposerClient::getDisplayInfo(
+        int32_t displayId, DisplayInfo* info)
+{
+    return getDisplayInfo(getBuiltInDisplay(displayId), info);
+}
+#endif
+
 // ----------------------------------------------------------------------------
 
 status_t ScreenshotClient::capture(
@@ -630,6 +638,13 @@ ScreenshotClient::ScreenshotClient()
 ScreenshotClient::~ScreenshotClient() {
     ScreenshotClient::release();
 }
+
+#if defined(TOROPLUS_RADIO)
+status_t ScreenshotClient::update() {
+    sp<ISurfaceComposer> sm(ComposerService::getComposerService());
+    return update(sm->getBuiltInDisplay(0));
+}
+#endif
 
 sp<CpuConsumer> ScreenshotClient::getCpuConsumer() const {
     if (mCpuConsumer == NULL) {
